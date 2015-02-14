@@ -33,8 +33,11 @@ namespace WpfApplication1
       private static UDPTransciever _u = new UDPTransciever(8888);
       private static CancellationTokenSource _cts;
       private static int _interval = 5;
-
       private static Boolean _isFetchingActive;
+
+      public string ReceiveBuffer { get; set; }
+      public string SendBuffer { get; set; }
+      public string SentBuffer { get; set; }
 
       public int Port
       {
@@ -104,10 +107,7 @@ namespace WpfApplication1
                 new InputOutput() { Pin = 7 },
             });
             icInputOutputList.ItemsSource = portC;
-
-            //var cancellationTokenSource = new CancellationTokenSource();
-            //var task = Repeat.Interval(TimeSpan.FromSeconds(3), () => changeValues(), cancellationTokenSource.Token);
-            //cancellationTokenSource.CancelAfter(60000); //Stop changing after a minute
+            _u.RemoteIPAddress = (string) GetValue(IPAddressProperty);
         }
 
         private void portC_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -138,12 +138,20 @@ namespace WpfApplication1
 
         private void changeValues()
         {
+            /*
             System.Random rg = new Random();
             foreach (InputOutput io in portC)
             {
                 io.IsHigh = (rg.NextDouble() > 0.5);
             }
+             */
+            String message = "s";
+            SentBuffer += message;
+            ReceiveBuffer += _u.Trancieve(message);
+
         }
+
+
     }
 }
 
