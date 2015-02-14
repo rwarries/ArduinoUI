@@ -32,10 +32,41 @@
             <TextBlock  FontSize="32">IO Values</TextBlock>
         </Border>
         <Border Grid.Row="0" Grid.Column="4" Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3">
-            <TextBlock  FontSize="32">Reserved</TextBlock>
+            <TextBlock  FontSize="32">Messages</TextBlock>
         </Border>
         <Border Grid.Row="1" Grid.Column="4" Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3">
-            <TextBlock  FontSize="11">Reserved</TextBlock>
+            <StackPanel Orientation="Vertical">
+                <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3" Margin="2,2,2,2">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock FontSize="11">Received (ASCII)</TextBlock>
+                        <TextBox Name="receivedMessageAsciiTextBox" FontSize="11"  
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                 ScrollViewer.CanContentScroll="True"
+                                 Height="100"/>
+                        <TextBlock FontSize="11">Received (Hex)</TextBlock>
+                        <TextBox Name="receivedMessageHexadecimalTextBox" FontSize="11"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                 ScrollViewer.CanContentScroll="True"
+                                 Height="200"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3" Margin="2,2,2,2">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock FontSize="11" Margin="2,2,2,2">Send message</TextBlock>
+                        <RadioButton GroupName="dataMode" Content="ASCII" IsChecked="True" Margin="2,2,2,2"/>
+                        <RadioButton GroupName="dataMode" Content="Hexadecimal" Margin="2,2,2,2"/>
+                        <TextBox Name="sentMessageHistoryTextBox" FontSize="11" IsEnabled="False"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                 ScrollViewer.CanContentScroll="True"
+                                 Height="200"/>
+                            <TextBox Name="sendMessageTextBox" FontSize="11"></TextBox>
+                    <Button Name="SendButton" Width="150">Send</Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
         </Border>
 
         <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto">
