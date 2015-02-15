@@ -34,7 +34,7 @@ namespace WpfApplication1
 
         public UDPTransciever()
         {
-            _udpClient = new UdpClient(0); // Zero, let OS stack choose an available local port
+
             this._remotePort = 8888;
         }
 
@@ -44,23 +44,30 @@ namespace WpfApplication1
             this._remotePort = remotePort;
         }
 
-        public string Trancieve(string message)
+        public string Trancieve(string message) // ascii in and out
         {
+            // Sends a message to the host to which you have connected.
+            Byte[] sendBytes = Encoding.ASCII.GetBytes(message);
+            return Encoding.ASCII.GetString(this.Trancieve(sendBytes));
+        }
+
+        public byte[] Trancieve(byte[] message)
+        {
+            byte[] returnValue;
+
             try
             {
+                _udpClient = new UdpClient(0); // Zero, let OS stack choose an available local port
                 _udpClient.Connect(_remoteIP, _remotePort);
 
-                // Sends a message to the host to which you have connected.
-                Byte[] sendBytes = Encoding.ASCII.GetBytes(message);
-
-                _udpClient.Send(sendBytes, sendBytes.Length);
+                _udpClient.Send(message, message.Length);
 
                 //IPEndPoint object will allow us to read datagrams sent from any source.
                 IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
                 // Blocks until a message returns on this socket from a remote host.
                 Byte[] receiveBytes = _udpClient.Receive(ref RemoteIpEndPoint);
-                string returnData = Encoding.ASCII.GetString(receiveBytes);
+
 
                 // Uses the IPEndPoint object to determine which host responded.
                 //Console.WriteLine("This is the message you received:\"" +
@@ -70,14 +77,19 @@ namespace WpfApplication1
                 //                            " on their port number :" +
                 //                            RemoteIpEndPoint.Port.ToString());
 
-                _udpClient.Close();
-                return returnData;
+
+                returnValue = receiveBytes;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
-                return "";
+                returnValue = null;
             }
+            finally
+            {
+                _udpClient.Close();
+            }
+            return returnValue;
         }
     }
 }

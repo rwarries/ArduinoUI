@@ -22,22 +22,35 @@ namespace WpfApplication1
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window , INotifyPropertyChanged
     {
       //private static PropertyMetadata pm = new PropertyMetadata(new PropertyChangedCallback(OnIpChanged));
       public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register("IPAddress", typeof(string),
                                                                     typeof(MainWindow), new UIPropertyMetadata("192.168.0.177", OnIpChanged));
-      
-
-      
+       
       private static UDPTransciever _u = new UDPTransciever(8888);
       private static CancellationTokenSource _cts;
-      private static int _interval = 5;
+      private static int _interval = 1;  //Fixme lob interval for now
       private static Boolean _isFetchingActive;
+      private static RingBuffer<byte> _receiveBuffer = new RingBuffer<byte>(20);  //Fixme small buffer for now
 
-      public string ReceiveBuffer { get; set; }
+      public RingBuffer<byte> ReceiveBuffer {
+          get { return _receiveBuffer; }
+          set { 
+              _receiveBuffer = value;
+              if (PropertyChanged != null){
+                 NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
+              }
+          }
+      }
       public string SendBuffer { get; set; }
       public string SentBuffer { get; set; }
+
+      private void NotifyChange(PropertyChangedEventArgs e)
+      {
+          if (PropertyChanged != null)
+              PropertyChanged(this, e);
+      }
 
       public int Port
       {
@@ -129,13 +142,6 @@ namespace WpfApplication1
             }
         }
 
-
-        // Simulate changing of values... causing the property to fire an event.
-        /*private void btnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            changeValues();
-        } */
-
         private void changeValues()
         {
             /*
@@ -145,12 +151,26 @@ namespace WpfApplication1
                 io.IsHigh = (rg.NextDouble() > 0.5);
             }
              */
-            String message = "s";
-            SentBuffer += message;
-            ReceiveBuffer += _u.Trancieve(message);
+            Byte[] message = {(byte) 'a'};
+            byte[] result = _u.Trancieve(message);
+            //SentBuffer = SentBuffer + message;
+            if (result != null)
+            {
+                for (int i = 0; i < message.Length; i++)
+                {
+                    ReceiveBuffer.Add(result[i]);
+                }
+                if (PropertyChanged != null)
+                {
+                    NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
+                }
+            }
 
         }
 
+        // see http://www.daedtech.com/wpf-and-notifying-property-change
+        // It is used to make sure that the TextBlocks that display messages get updated
+        public event PropertyChangedEventHandler PropertyChanged;
 
     }
 }

@@ -53,6 +53,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BinaryByteBufferToHexStringConverter.cs" />
+    <Compile Include="BinaryByteBufferToAsciiStringConverter.cs" />
+    <Compile Include="RingBuffer.cs" />
     <Compile Include="ErrorsToMessageConverter.cs" />
     <Compile Include="IPValidationRule.cs" />
     <Compile Include="NotConverter.cs" />

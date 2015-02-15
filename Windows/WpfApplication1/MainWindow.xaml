@@ -7,6 +7,8 @@
     <Window.Resources>
         <local:ErrorsToMessageConverter x:Key="eToMConverter" />
         <local:NotConverter x:Key="NotConverter" />
+        <local:BinaryByteBufferToAsciiStringConverter x:Key="BinaryByteBufferToAsciiStringConverter" />
+        <local:BinaryByteBufferToHexStringConverter x:Key="BinaryByteBufferToHexStringConverter" />
     </Window.Resources>
 
     <Grid Name="OuterGrid">
@@ -39,21 +41,23 @@
                 <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3" Margin="2,2,2,2">
                     <StackPanel Orientation="Vertical">
                         <TextBlock FontSize="11">Received (ASCII)</TextBlock>
-                        <TextBox Name="receivedMessageAsciiTextBox" FontSize="11"  
+                        <TextBlock Name="receivedMessageAsciiTextBox" FontSize="11"  
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                                  ScrollViewer.CanContentScroll="True"
-                                 Height="100">
-                                 <TextBox.Text>
-                                    <Binding ElementName="This" Path="ReceiveBuffer" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
-                                 </TextBox.Text>
-                        </TextBox>
+                                 Height="100"
+                                 TextWrapping="Wrap"
+                                 Text="{Binding ElementName=This, Path=ReceiveBuffer, Converter={StaticResource BinaryByteBufferToAsciiStringConverter}}"/>
+                        
                         <TextBlock FontSize="11">Received (Hex)</TextBlock>
-                        <TextBox Name="receivedMessageHexadecimalTextBox" FontSize="11"
+
+                        <TextBlock Name="receivedMessageHexadecimalTextBox" FontSize="11"  
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                                  ScrollViewer.CanContentScroll="True"
-                                 Height="200"/>
+                                 Height="200"
+                                 TextWrapping="Wrap"
+                                 Text="{Binding ElementName=This, Path=ReceiveBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}}"/>
                     </StackPanel>
                 </Border>
                 <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3" Margin="2,2,2,2">
