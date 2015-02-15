@@ -32,7 +32,9 @@ namespace WpfApplication1
       private static CancellationTokenSource _cts;
       private static int _interval = 1;  //Fixme lob interval for now
       private static Boolean _isFetchingActive;
-      private static RingBuffer<byte> _receiveBuffer = new RingBuffer<byte>(20);  //Fixme small buffer for now
+      private static RingBuffer<byte> _receiveBuffer = new RingBuffer<byte>(2000);
+      private static RingBuffer<byte> _sentBuffer = new RingBuffer<byte>(2000);
+      private static string _sendString = "";
 
       public RingBuffer<byte> ReceiveBuffer {
           get { return _receiveBuffer; }
@@ -43,8 +45,28 @@ namespace WpfApplication1
               }
           }
       }
-      public string SendBuffer { get; set; }
-      public string SentBuffer { get; set; }
+
+      public RingBuffer<byte> SentBuffer
+      {
+          get { return _sentBuffer; }
+          set
+          {
+              _sentBuffer = value;
+              if (PropertyChanged != null)
+              {
+                  NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
+              }
+          }
+      }
+
+      public string SendString {
+          get { return _sendString; }
+          set
+          {
+              _sendString = value;
+              NotifyChange(new PropertyChangedEventArgs("SendString"));
+          }
+      }
 
       private void NotifyChange(PropertyChangedEventArgs e)
       {
@@ -171,6 +193,19 @@ namespace WpfApplication1
         // see http://www.daedtech.com/wpf-and-notifying-property-change
         // It is used to make sure that the TextBlocks that display messages get updated
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SendString.Length > 0)
+            {
+                byte[] bytesToSend = Encoding.ASCII.GetBytes(SendString);
+                for (int i=0; i<SendString.Length;i++){
+                    _sentBuffer.Add(bytesToSend[i]);
+                }
+                SendString = "";
+                NotifyChange(new PropertyChangedEventArgs("SentBuffer"));             
+            }
+        }
 
     }
 }

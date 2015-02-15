@@ -27,7 +27,7 @@ namespace WpfApplication1
 
             RingBuffer<byte> inBytes = (RingBuffer<byte>)value;
             for (int i = 0; i < inBytes.Count;i++ ){
-                    result.Append(inBytes[i].ToString());
+                    result.Append(inBytes[i].ToString("X2"));  // Produces Hexadecimal output
                     result.Append(" ");
             }
             return result.ToString();
