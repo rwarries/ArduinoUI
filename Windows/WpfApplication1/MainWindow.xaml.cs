@@ -52,10 +52,7 @@ namespace WpfApplication1
           set
           {
               _sentBuffer = value;
-              if (PropertyChanged != null)
-              {
-                  NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
-              }
+              NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
           }
       }
 
@@ -175,10 +172,14 @@ namespace WpfApplication1
              */
             Byte[] message = {(byte) 'a'};
             byte[] result = _u.Trancieve(message);
-            //SentBuffer = SentBuffer + message;
+            handleResult(result);
+        }
+
+        private void handleResult(byte[] result)
+        {
             if (result != null)
             {
-                for (int i = 0; i < message.Length; i++)
+                for (int i = 0; i < result.Length; i++)
                 {
                     ReceiveBuffer.Add(result[i]);
                 }
@@ -187,7 +188,6 @@ namespace WpfApplication1
                     NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
                 }
             }
-
         }
 
         // see http://www.daedtech.com/wpf-and-notifying-property-change
@@ -199,6 +199,7 @@ namespace WpfApplication1
             if (SendString.Length > 0)
             {
                 byte[] bytesToSend = Encoding.ASCII.GetBytes(SendString);
+                handleResult(_u.Trancieve(bytesToSend));
                 for (int i=0; i<SendString.Length;i++){
                     _sentBuffer.Add(bytesToSend[i]);
                 }

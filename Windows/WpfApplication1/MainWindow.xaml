@@ -71,9 +71,11 @@
                                  ScrollViewer.CanContentScroll="True"
                                  Height="200"
                                  TextWrapping="Wrap"
-                                 Text="{Binding ElementName=This, Path=SentBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}}">
-                        </TextBlock>
-                        <TextBox Name="sendMessageTextBox" FontSize="11" Text="{Binding ElementName=This, Path=SentBuffer, Mode=TwoWay}">
+                                 Text="{Binding ElementName=This, Path=SentBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}}"/>
+                        <TextBox Name="sendMessageTextBox" FontSize="11">
+                            <TextBox.Text>
+                                <Binding ElementName="This" Path="SendString" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+                            </TextBox.Text>
                         </TextBox>
                         <Button Name="SendButton" Width="150" Click="SendButton_Click">Send</Button>
                     </StackPanel>
