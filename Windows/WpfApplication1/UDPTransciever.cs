@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,6 +91,22 @@ namespace WpfApplication1
                 _udpClient.Close();
             }
             return returnValue;
+        }
+
+        public string Ping()
+        {
+            Ping pingSender = new Ping();
+            IPAddress address = this._remoteIP;
+            PingReply reply = pingSender.Send(address);
+
+            if (reply.Status == IPStatus.Success)
+            {
+                return reply.RoundtripTime.ToString();
+            }
+            else
+            {
+                return reply.Status.ToString();
+            }
         }
     }
 }

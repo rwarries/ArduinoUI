@@ -9,7 +9,13 @@
         <local:NotConverter x:Key="NotConverter" />
         <local:BinaryByteBufferToAsciiStringConverter x:Key="BinaryByteBufferToAsciiStringConverter" />
         <local:BinaryByteBufferToHexStringConverter x:Key="BinaryByteBufferToHexStringConverter" />
+        <local:PingTextConverter x:Key="PingTextConverter" />
+        <local:PingTextMultiValueConverter x:Key="PingTextMultiValueConverter" />
     </Window.Resources>
+
+    <!--Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext-->
 
     <Grid Name="OuterGrid">
         <Grid.ColumnDefinitions>
@@ -34,27 +40,25 @@
             <TextBlock  FontSize="32">IO Values</TextBlock>
         </Border>
         <Border Grid.Row="0" Grid.Column="4" Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3">
-            <TextBlock  FontSize="32">Messages</TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock  FontSize="32">Messages</TextBlock>
+                <Button Height="40" Width="40" HorizontalAlignment="Right" Margin="3,3,3,3" Name="ButtonDelete" VerticalAlignment="Top" Click="ButtonDelete_Click">
+                    <Image Source="broom.png" />
+                </Button>
+            </StackPanel>
         </Border>
         <Border Grid.Row="1" Grid.Column="4" Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3">
             <StackPanel Orientation="Vertical">
                 <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3" Margin="2,2,2,2">
                     <StackPanel Orientation="Vertical">
                         <TextBlock FontSize="11">Received (ASCII)</TextBlock>
-                        <TextBlock Name="receivedMessageAsciiTextBox" FontSize="11"  
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                 ScrollViewer.CanContentScroll="True"
+                            <TextBlock Name="receivedMessageAsciiTextBox" FontSize="11"  
                                  Height="100"
                                  TextWrapping="Wrap"
                                  Text="{Binding ElementName=This, Path=ReceiveBuffer, Converter={StaticResource BinaryByteBufferToAsciiStringConverter}}"/>
-                        
-                        <TextBlock FontSize="11">Received (Hex)</TextBlock>
 
+                            <TextBlock FontSize="11">Received (Hex)</TextBlock>
                         <TextBlock Name="receivedMessageHexadecimalTextBox" FontSize="11"  
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                 ScrollViewer.CanContentScroll="True"
                                  Height="200"
                                  TextWrapping="Wrap"
                                  Text="{Binding ElementName=This, Path=ReceiveBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}}"/>
@@ -66,13 +70,10 @@
                         <RadioButton GroupName="dataMode" Content="ASCII" IsChecked="True" Margin="2,2,2,2"/>
                         <RadioButton GroupName="dataMode" Content="Hexadecimal" Margin="2,2,2,2"/>
                         <TextBlock Name="sentMessageHistoryTextBox" FontSize="11"  
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                 ScrollViewer.CanContentScroll="True"
                                  Height="200"
                                  TextWrapping="Wrap"
                                  Text="{Binding ElementName=This, Path=SentBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}}"/>
-                        <TextBox Name="sendMessageTextBox" FontSize="11">
+                        <TextBox Name="sendMessageTextBox" FontSize="11" Background="LightYellow">
                             <TextBox.Text>
                                 <Binding ElementName="This" Path="SendString" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
                             </TextBox.Text>
@@ -153,12 +154,39 @@
                 </TextBox>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <CheckBox Content="Fetch Data" Name="checkBoxFetchData">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="Ping Arduino =>">
+                            <CheckBox.IsChecked>
+                                <Binding ElementName="This" Path="IsPingActive" UpdateSourceTrigger="PropertyChanged"/>
+                            </CheckBox.IsChecked>                      
+                        </CheckBox>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <Binding ElementName="This" Converter="{StaticResource PingTextConverter}" Path="PingResult"/>
+                            </TextBlock.Text>
+                        </TextBlock>  
+                        <!--TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource PingTextMultiValueConverter}">
+                                    <Binding Path="This.IsPingActive"/>
+                                    <Binding Path="This.PingResult"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock-->
+
+                    </StackPanel>
+                    <CheckBox Content="Alive Message" Name="checkAliveMessage">
+                        <CheckBox.IsChecked>
+                            <Binding ElementName="This" Path="IsAliveActive" UpdateSourceTrigger="PropertyChanged"></Binding>
+                        </CheckBox.IsChecked>
+                    </CheckBox>
+                    <CheckBox Content="Fetch IO Data" Name="checkBoxFetchData">
                     <CheckBox.IsChecked>
                         <Binding ElementName="This" Path="IsFetchingIsActive" UpdateSourceTrigger="PropertyChanged"></Binding>
                     </CheckBox.IsChecked>
                 </CheckBox>
-                <Rectangle VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
+
+                    <Rectangle VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>  Interval [s]</TextBlock>
                     <TextBox Margin="10,0,0,0" IsEnabled="{Binding ElementName=checkBoxFetchData, Converter={StaticResource NotConverter}, Path=IsChecked}">

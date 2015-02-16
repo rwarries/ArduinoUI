@@ -29,9 +29,16 @@ namespace WpfApplication1
                                                                     typeof(MainWindow), new UIPropertyMetadata("192.168.0.177", OnIpChanged));
        
       private static UDPTransciever _u = new UDPTransciever(8888);
+      private static CancellationTokenSource _ctsAlive;
+      private static CancellationTokenSource _ctsPing;
       private static CancellationTokenSource _cts;
+
       private static int _interval = 1;  //Fixme lob interval for now
+      private static Boolean _isPingActive;
+      private static Boolean _isAliveActive;
       private static Boolean _isFetchingActive;
+      private static string _pingResult = "not run";
+
       private static RingBuffer<byte> _receiveBuffer = new RingBuffer<byte>(2000);
       private static RingBuffer<byte> _sentBuffer = new RingBuffer<byte>(2000);
       private static string _sendString = "";
@@ -62,6 +69,16 @@ namespace WpfApplication1
           {
               _sendString = value;
               NotifyChange(new PropertyChangedEventArgs("SendString"));
+          }
+      }
+
+      public string PingResult
+      {
+          get { return _pingResult; }
+          set
+          {
+              _pingResult = value;
+              NotifyChange(new PropertyChangedEventArgs("PingResult"));
           }
       }
 
@@ -106,6 +123,50 @@ namespace WpfApplication1
             }
         }
 
+        public Boolean IsAliveActive
+        {
+            get { return _isAliveActive; }
+            set
+            {
+                _isAliveActive = value;
+                if (_isAliveActive)
+                {
+                    _ctsAlive = new CancellationTokenSource();
+                    Repeat.Interval(TimeSpan.FromSeconds(_interval), () => checkAlive(), _ctsAlive.Token);
+                }
+                else
+                {
+                    if (_ctsAlive != null)
+                    {
+                        _ctsAlive.Cancel();
+                    }
+                }
+            }
+        }
+
+        public Boolean IsPingActive
+        {
+            get { return _isPingActive; }
+            set
+            {
+                _isPingActive = value;
+                if (_isPingActive)
+                {
+                    _ctsPing = new CancellationTokenSource();
+                    Repeat.Interval(TimeSpan.FromSeconds(_interval), () => checkPing(), _ctsPing.Token);
+                }
+                else
+                {
+                    if (_ctsPing != null)
+                    {
+                        _ctsPing.Cancel();
+                    }
+                    //FIXME want to handle this in the view only
+                    PingResult = "unknown";
+                }
+            }
+        }
+
         // Callback for dependency property
         private static void OnIpChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -137,6 +198,12 @@ namespace WpfApplication1
                 new InputOutput() { Pin = 5 },
                 new InputOutput() { Pin = 6 },
                 new InputOutput() { Pin = 7 },
+                new InputOutput() { Pin = 8 },
+                new InputOutput() { Pin = 9 },
+                new InputOutput() { Pin = 10 },
+                new InputOutput() { Pin = 11 },
+                new InputOutput() { Pin = 12 },
+                new InputOutput() { Pin = 13 },
             });
             icInputOutputList.ItemsSource = portC;
             _u.RemoteIPAddress = (string) GetValue(IPAddressProperty);
@@ -163,16 +230,43 @@ namespace WpfApplication1
 
         private void changeValues()
         {
-            /*
-            System.Random rg = new Random();
-            foreach (InputOutput io in portC)
-            {
-                io.IsHigh = (rg.NextDouble() > 0.5);
-            }
-             */
-            Byte[] message = {(byte) 'a'};
+            Byte[] message = {(byte) 's'};
             byte[] result = _u.Trancieve(message);
             handleResult(result);
+            foreach (InputOutput io in portC)
+            {
+                io.IsHigh = GetBit(io.Pin,result);
+            }
+
+            Byte[] messageConfig = { (byte) 'c' };
+            result = _u.Trancieve(messageConfig);
+            handleResult(result);
+            foreach (InputOutput io in portC)
+            {
+                io.Mode = GetBit(io.Pin, result) ? ModeEnum.DIGITAL_INPUT : ModeEnum.DIGITAL_OUTPUT;
+            }
+
+        }
+
+        private bool GetBit(int pin, byte[] message)
+        {
+            int byteNr = pin / 8;
+            int offset = pin % 8;
+            byte b = message[byteNr];
+            bool result = ((b & (1 << offset-1)) != 0);
+            return result;
+        }
+
+        private void checkAlive()
+        {
+            Byte[] message = { (byte)'a' };
+            byte[] result = _u.Trancieve(message);
+            handleResult(result);
+        }
+
+        private void checkPing()
+        {
+            PingResult = _u.Ping();
         }
 
         private void handleResult(byte[] result)
@@ -208,7 +302,14 @@ namespace WpfApplication1
             }
         }
 
+        private void ButtonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            SentBuffer.Clear();
+            NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
+
+            ReceiveBuffer.Clear();
+            NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
+        }
+
     }
 }
-
-

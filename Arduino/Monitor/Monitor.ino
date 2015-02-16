@@ -66,15 +66,19 @@ void handleDatagram(){
               break;
     case 'b':
               Serial.println("Type B Request");
-              Udp.write("Ack:a");
+              Udp.write("Ack:b");
               break;
-    case 'c':
+    case 'c':     //Get Arduino Configuration
               Serial.println("Request Configuration Request");
-              Udp.write("Ack:c... Configuration is Blah");
+              Udp.write(DDRD);  //Data direction Register for pins 0..7
+              Udp.write(PIND);  //Input configuration for pins 0..7
+              Udp.write(DDRB);  //Data direction Register for pins 8..13
+              Udp.write(PINB);  //Input configuration for pins 8..13
               break;      
-    case 's':
-              Serial.println("Status Request");
-              Udp.write("Ack:s... Status is...");
+    case 's':     //Get Status for IO
+              Serial.println("Status Request"); // @see http://www.arduino.cc/en/Reference/PortManipulation
+              Udp.write(PORTD);  //Write status of digital pins 0..7
+              Udp.write(PORTB);  //Write status of digital pins 8..13
               break;           
     default: 
               Serial.println("Unknown Request");

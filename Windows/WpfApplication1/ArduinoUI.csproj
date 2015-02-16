@@ -55,6 +55,8 @@
     </ApplicationDefinition>
     <Compile Include="BinaryByteBufferToHexStringConverter.cs" />
     <Compile Include="BinaryByteBufferToAsciiStringConverter.cs" />
+    <Compile Include="PingTextMultiValueConverter.cs" />
+    <Compile Include="PingTextConverter.cs" />
     <Compile Include="RingBuffer.cs" />
     <Compile Include="ErrorsToMessageConverter.cs" />
     <Compile Include="IPValidationRule.cs" />
@@ -107,6 +109,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\..\fugue-icons-3.5.6\icons\broom.png">
+      <Link>broom.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="D:\fugue-icons-3.5.6\icons\arrow-090.png">
       <Link>arrow-090.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
