@@ -33,7 +33,7 @@ namespace WpfApplication1
       private static CancellationTokenSource _ctsPing;
       private static CancellationTokenSource _cts;
 
-      private static int _interval = 1;  //Fixme lob interval for now
+      private static int _interval = 1;
       private static Boolean _isPingActive;
       private static Boolean _isAliveActive;
       private static Boolean _isFetchingActive;
@@ -190,20 +190,28 @@ namespace WpfApplication1
             portC.CollectionChanged += portC_CollectionChanged;
 
             portC.AddRange(new List<InputOutput>{ 
-                new InputOutput() { Pin = 0 , Name = "RX" , Mode = ModeEnum.RESERVED}, 
-                new InputOutput() { Pin = 1 , Name = "TX" , Mode = ModeEnum.RESERVED},
-                new InputOutput() { Pin = 2 },
-                new InputOutput() { Pin = 3 },
-                new InputOutput() { Pin = 4 },
-                new InputOutput() { Pin = 5 },
-                new InputOutput() { Pin = 6 },
-                new InputOutput() { Pin = 7 },
-                new InputOutput() { Pin = 8 },
-                new InputOutput() { Pin = 9 },
-                new InputOutput() { Pin = 10 },
-                new InputOutput() { Pin = 11 },
-                new InputOutput() { Pin = 12 },
-                new InputOutput() { Pin = 13 },
+                new InputOutput() { Pin = 0 , Name = "D0/RX" , Mode = ModeEnum.RESERVED},
+                new InputOutput() { Pin = 1 , Name = "D1/TX" , Mode = ModeEnum.RESERVED},
+                new InputOutput() { Pin = 2,  Name = "D2" },
+                new InputOutput() { Pin = 3,  Name = "D3" },
+                new InputOutput() { Pin = 4,  Name = "D4" },
+                new InputOutput() { Pin = 5,  Name = "D5/PWM"},
+                new InputOutput() { Pin = 6,  Name = "D6/PWM" },
+                new InputOutput() { Pin = 7,  Name = "D7" },
+                new InputOutput() { Pin = 8,  Name = "B0" },                                          
+                new InputOutput() { Pin = 9,  Name = "B1/PWM"},
+                new InputOutput() { Pin = 10, Name = "B2/PWM" },
+                new InputOutput() { Pin = 11, Name = "B3/PWM / MOSI (SPI)" },
+                new InputOutput() { Pin = 12, Name = "B4/MISO (SPI)" },
+                new InputOutput() { Pin = 13, Name = "B5/SCK (SPI)" },    //B6 and B7 not available (crystal)
+                new InputOutput() { Pin = 14, Name = "C0/Analog0" }, 
+                new InputOutput() { Pin = 15, Name = "C1/Analog1" }, 
+                new InputOutput() { Pin = 16, Name = "C2/Analog2" }, 
+                new InputOutput() { Pin = 17, Name = "C3/Analog3" }, 
+                new InputOutput() { Pin = 18, Name = "C4/Analog4/SDA (I2C)" }, 
+                new InputOutput() { Pin = 19, Name = "C5/Analog5/SCL (I2C)" }, 
+                new InputOutput() { Pin = 20, Name = "RESET" , Mode = ModeEnum.DIGITAL_INPUT }, 
+
             });
             icInputOutputList.ItemsSource = portC;
             _u.RemoteIPAddress = (string) GetValue(IPAddressProperty);
@@ -245,16 +253,12 @@ namespace WpfApplication1
             {
                 io.Mode = GetBit(io.Pin, result) ? ModeEnum.DIGITAL_INPUT : ModeEnum.DIGITAL_OUTPUT;
             }
-
         }
 
         private bool GetBit(int pin, byte[] message)
         {
-            int byteNr = pin / 8;
-            int offset = pin % 8;
-            byte b = message[byteNr];
-            bool result = ((b & (1 << offset-1)) != 0);
-            return result;
+            byte b = message[pin / 8];
+            return ((b & (1 << (pin % 8))) != 0);
         }
 
         private void checkAlive()

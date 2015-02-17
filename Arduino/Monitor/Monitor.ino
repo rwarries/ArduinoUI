@@ -78,7 +78,10 @@ void handleDatagram(){
     case 's':     //Get Status for IO
               Serial.println("Status Request"); // @see http://www.arduino.cc/en/Reference/PortManipulation
               Udp.write(PORTD);  //Write status of digital pins 0..7
+              Serial.print(PORTD);
+              Serial.print(":");
               Udp.write(PORTB);  //Write status of digital pins 8..13
+              Serial.println(PORTB);
               break;           
     default: 
               Serial.println("Unknown Request");
