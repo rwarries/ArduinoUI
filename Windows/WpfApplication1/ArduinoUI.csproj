@@ -53,14 +53,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BinaryByteBufferToHexStringConverter.cs" />
-    <Compile Include="BinaryByteBufferToAsciiStringConverter.cs" />
-    <Compile Include="PingTextMultiValueConverter.cs" />
-    <Compile Include="PingTextConverter.cs" />
+    <Compile Include="Converters\BinaryByteBufferToHexStringConverter.cs" />
+    <Compile Include="Converters\BinaryByteBufferToAsciiStringConverter.cs" />
+    <Compile Include="Converters\BooleanToIOConverter.cs" />
+    <Compile Include="Converters\PingTextMultiValueConverter.cs" />
+    <Compile Include="Converters\PingTextConverter.cs" />
     <Compile Include="RingBuffer.cs" />
-    <Compile Include="ErrorsToMessageConverter.cs" />
+    <Compile Include="Converters\ErrorsToMessageConverter.cs" />
     <Compile Include="IPValidationRule.cs" />
-    <Compile Include="NotConverter.cs" />
+    <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Repeat.cs" />
     <Compile Include="UDPTransciever.cs" />
     <Page Include="MainWindow.xaml">
@@ -71,8 +72,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BaseConverter.cs" />
-    <Compile Include="BoolToIconConverter.cs" />
+    <Compile Include="Converters\BaseConverter.cs" />
+    <Compile Include="Converters\BoolToIconConverter.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="InputOutput.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -81,7 +82,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -109,6 +109,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\..\fugue-icons-3.5.6\icons\application-import.png">
+      <Link>application-import.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\fugue-icons-3.5.6\icons\broom.png">
       <Link>broom.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -123,6 +127,9 @@
       <Link>arrow-270.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

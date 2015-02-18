@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using ExtensionMethods;
 using System.ComponentModel;
 using System.Threading;
+using System.Diagnostics;
 
 namespace WpfApplication1
 {
@@ -190,8 +191,8 @@ namespace WpfApplication1
             portC.CollectionChanged += portC_CollectionChanged;
 
             portC.AddRange(new List<InputOutput>{ 
-                new InputOutput() { Pin = 0 , Name = "D0/RX" , Mode = ModeEnum.RESERVED},
-                new InputOutput() { Pin = 1 , Name = "D1/TX" , Mode = ModeEnum.RESERVED},
+                new InputOutput() { Pin = 0 , Name = "D0/RX"},
+                new InputOutput() { Pin = 1 , Name = "D1/TX"},
                 new InputOutput() { Pin = 2,  Name = "D2" },
                 new InputOutput() { Pin = 3,  Name = "D3" },
                 new InputOutput() { Pin = 4,  Name = "D4" },
@@ -210,7 +211,7 @@ namespace WpfApplication1
                 new InputOutput() { Pin = 17, Name = "C3/Analog3" }, 
                 new InputOutput() { Pin = 18, Name = "C4/Analog4/SDA (I2C)" }, 
                 new InputOutput() { Pin = 19, Name = "C5/Analog5/SCL (I2C)" }, 
-                new InputOutput() { Pin = 20, Name = "RESET" , Mode = ModeEnum.DIGITAL_INPUT }, 
+                new InputOutput() { Pin = 20, Name = "RESET"}, 
 
             });
             icInputOutputList.ItemsSource = portC;
@@ -244,14 +245,6 @@ namespace WpfApplication1
             foreach (InputOutput io in portC)
             {
                 io.IsHigh = GetBit(io.Pin,result);
-            }
-
-            Byte[] messageConfig = { (byte) 'c' };
-            result = _u.Trancieve(messageConfig);
-            handleResult(result);
-            foreach (InputOutput io in portC)
-            {
-                io.Mode = GetBit(io.Pin, result) ? ModeEnum.DIGITAL_INPUT : ModeEnum.DIGITAL_OUTPUT;
             }
         }
 
@@ -313,6 +306,25 @@ namespace WpfApplication1
 
             ReceiveBuffer.Clear();
             NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
+        }
+
+        private void ButtonGetConfig_Click(object sender, RoutedEventArgs e)
+        {
+            Byte[] message = { (byte)'c' };
+            Byte[] result = _u.Trancieve(message);
+            // 6 Bytes are received:
+            //0:DDRD in DDR. a '0' means input. A '1' indicates it indicates an output
+            //1:DDRB
+            //2:DDRC
+            //3:PIND
+            //4:PINB
+            //5:PINC
+            handleResult(result);
+            foreach (InputOutput io in portC)
+            {
+                Debug.Write("Pin " + io.Pin + " has mode " + GetBit(io.Pin, result));
+                io.Mode = GetBit(io.Pin, result);
+            }
         }
 
     }

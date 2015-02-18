@@ -22,10 +22,24 @@ char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet,
 EthernetUDP Udp;
 
 void setup() {
+  
   // start the Ethernet and UDP:
   Ethernet.begin(mac,ip);
   Udp.begin(localPort);
   Serial.begin(9600);
+  
+  // For demo reasons setting some port in order to be able to read their function and status in the Windows application.
+  // replace with anything you need for your application.
+  //Can't use 0 and 1 (used for serial communication)
+  pinMode(2, INPUT);           // set pin to input
+  digitalWrite(2, LOW);       // turn on pullup resistor
+  pinMode(3, INPUT);           // set pin to input
+  digitalWrite(3, LOW);       // turn off pullup resistor  
+  pinMode(8, OUTPUT);         // set pin to output
+  digitalWrite(8, HIGH);       // turn on 
+  pinMode(9, OUTPUT);         // set pin to output
+  digitalWrite(9, LOW);       // turn on 
+
 }
 
 void loop() {
@@ -71,17 +85,18 @@ void handleDatagram(){
     case 'c':     //Get Arduino Configuration
               Serial.println("Request Configuration Request");
               Udp.write(DDRD);  //Data direction Register for pins 0..7
-              Udp.write(PIND);  //Input configuration for pins 0..7
               Udp.write(DDRB);  //Data direction Register for pins 8..13
+              Udp.write(DDRC);  //Data direction Register for pins 14 (A0)..
+              
+              Udp.write(PIND);  //Input configuration for pins 0..7
               Udp.write(PINB);  //Input configuration for pins 8..13
+              Udp.write(PINC);  //Data direction Register for pins 8..13
               break;      
     case 's':     //Get Status for IO
               Serial.println("Status Request"); // @see http://www.arduino.cc/en/Reference/PortManipulation
               Udp.write(PORTD);  //Write status of digital pins 0..7
-              Serial.print(PORTD);
-              Serial.print(":");
               Udp.write(PORTB);  //Write status of digital pins 8..13
-              Serial.println(PORTB);
+              Udp.write(PORTC);  //Write status of digital pins 14 (A0)..
               break;           
     default: 
               Serial.println("Unknown Request");

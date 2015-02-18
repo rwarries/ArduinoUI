@@ -11,6 +11,7 @@
         <local:BinaryByteBufferToHexStringConverter x:Key="BinaryByteBufferToHexStringConverter" />
         <local:PingTextConverter x:Key="PingTextConverter" />
         <local:PingTextMultiValueConverter x:Key="PingTextMultiValueConverter" />
+        <local:BooleanToIOConverter x:Key="BooleanToIOCOnverter" />
     </Window.Resources>
 
     <!--Window.DataContext>
@@ -37,7 +38,13 @@
             <TextBlock FontSize="32">Connection</TextBlock>
         </Border>
         <Border Grid.Row="0" Grid.Column="2" Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3">
-            <TextBlock  FontSize="32">IO Values</TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock  FontSize="32">IO Values</TextBlock>
+                <Button Height="40" Width="40" HorizontalAlignment="Right" Margin="3,3,3,3" Name="ButtonGetConfig" VerticalAlignment="Top" Click="ButtonGetConfig_Click">              
+                    <Image Source="application-import.png" />
+                </Button>
+            </StackPanel>
+
         </Border>
         <Border Grid.Row="0" Grid.Column="4" Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="3,3,3,3">
             <StackPanel Orientation="Horizontal">
@@ -99,8 +106,8 @@
                                 <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Pin}" />
-                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Mode}"/>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Pin}" />
+                                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Mode, Converter={StaticResource BooleanToIOCOnverter}}"/>
                             <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Name}"/>
                             <Image Width="16">
                                 <Image.Style>

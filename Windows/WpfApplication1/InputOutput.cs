@@ -11,7 +11,7 @@ namespace WpfApplication1
     {
         private string _name;
         private int _pinNumber;
-        private ModeEnum _mode;
+        private Boolean? _mode;
         private Boolean _isHigh;
 
         // Declare the event 
@@ -19,9 +19,9 @@ namespace WpfApplication1
 
         public InputOutput()
         {
-            _name = "Uninitialised";
+            _name = "";
             _pinNumber = -1;
-            _mode = ModeEnum.RESERVED;
+            _mode = null;
             _isHigh = false;
         }
 
@@ -38,10 +38,13 @@ namespace WpfApplication1
         }
         
         
-        public ModeEnum Mode
+        public Boolean? Mode
         {
             get { return _mode; }
-            set { _mode = value; }
+            set { 
+                _mode = value;
+                OnPropertyChanged("Mode");
+            }
         }
 
         public Boolean IsHigh
@@ -49,7 +52,6 @@ namespace WpfApplication1
             get { return _isHigh; }
             set { 
                 _isHigh = value;
-                // Call OnPropertyChanged whenever the property is updated
                 OnPropertyChanged("IsHigh");  
             }
 
