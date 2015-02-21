@@ -15,6 +15,8 @@ IPAddress ip(192, 168, 0, 177); // <== enter your Arduino ip (With DHCP is possi
 
 unsigned int localPort = 8888;      // local port to listen on
 
+unsigned int demoCounter = 0;    //Everytime demoCounter reaches thresshold an output is toggled for demo purposes..
+
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet,
 
@@ -31,6 +33,7 @@ void setup() {
   // For demo reasons setting some port in order to be able to read their function and status in the Windows application.
   // replace with anything you need for your application.
   //Can't use 0 and 1 (used for serial communication)
+  // NOTE THAT 10,11,12,13 are in use for ethernet. 4 is likely to be used by sd card
   pinMode(2, INPUT);           // set pin to input
   digitalWrite(2, LOW);       // turn on pullup resistor
   pinMode(3, INPUT);           // set pin to input
@@ -39,7 +42,8 @@ void setup() {
   digitalWrite(8, HIGH);       // turn on 
   pinMode(9, OUTPUT);         // set pin to output
   digitalWrite(9, LOW);       // turn on 
-
+  
+  pinMode(7, OUTPUT);   // Used for demonstrating the "tracking of a change
 }
 
 void loop() {
@@ -64,6 +68,11 @@ void loop() {
     handleDatagram(); //FIXME not ver elegant to be fiddling with globals
   }
   delay(1000);  //All other work that needs to be done goes instead of this delay...
+  if(demoCounter++ > 10){
+    digitalWrite(7, !digitalRead(7));
+    Serial.print(demoCounter);
+    demoCounter = 0;
+  }
 }
 
 void handleDatagram(){

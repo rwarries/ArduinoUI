@@ -13,6 +13,9 @@ namespace WpfApplication1
         private int _pinNumber;
         private Boolean? _mode;
         private Boolean _isHigh;
+        private int _changed; //Indicates how long ago this was changed in # polls ago
+
+        private static Random _rnd = new Random();
 
         // Declare the event 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,6 +26,7 @@ namespace WpfApplication1
             _pinNumber = -1;
             _mode = null;
             _isHigh = false;
+            _changed = 0;
         }
 
         public string Name
@@ -50,11 +54,26 @@ namespace WpfApplication1
         public Boolean IsHigh
         { 
             get { return _isHigh; }
-            set { 
-                _isHigh = value;
-                OnPropertyChanged("IsHigh");  
+            set {
+                if (value != _isHigh)
+                {
+                    _isHigh = value;
+                    _changed = 0; // start counting again
+                    OnPropertyChanged("IsHigh");
+                }
             }
+        }
 
+        public int Changed
+        {
+            get { return _changed; }
+            set { _changed = value;
+                    if (_changed > 0)
+                    {
+                        int a = 10;
+                    }
+                    OnPropertyChanged("Changed");
+            }
         }
 
         private void OnPropertyChanged(string name)
@@ -65,5 +84,7 @@ namespace WpfApplication1
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
+
+
     }
 }

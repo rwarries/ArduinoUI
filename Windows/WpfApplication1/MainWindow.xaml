@@ -12,6 +12,7 @@
         <local:PingTextConverter x:Key="PingTextConverter" />
         <local:PingTextMultiValueConverter x:Key="PingTextMultiValueConverter" />
         <local:BooleanToIOConverter x:Key="BooleanToIOCOnverter" />
+        <local:ChangedToColorConverter x:Key="ChangedToColorConverter"/>
     </Window.Resources>
 
     <!--Window.DataContext>
@@ -96,7 +97,7 @@
                 <ItemsControl Name="icInputOutputList" AlternationCount="2">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid x:Name="FooBar">
+                            <Grid x:Name="FooBar">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
@@ -106,24 +107,29 @@
                                 <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Pin}" />
-                                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Mode, Converter={StaticResource BooleanToIOCOnverter}}"/>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Pin}" />
                             <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Name}"/>
-                            <Image Width="16">
-                                <Image.Style>
-                                    <Style TargetType="{x:Type Image}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsHigh}" Value="False">
-                                                <Setter Property="Source" Value="pack://application:,,/arrow-270.png"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsHigh}" Value="True">
-                                                <Setter Property="Source" Value="pack://application:,,/arrow-090.png"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                        </Grid>
+                            <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding Mode, Converter={StaticResource BooleanToIOCOnverter}}"/>
+                            <Border Grid.Column="2" Grid.Row="1" Background="{Binding Changed, Converter={StaticResource ChangedToColorConverter}}">
+                                <!--Border Grid.Column="2" Grid.Row="1" BorderBrush="Red" BorderThickness="2" CornerRadius="3,3,3,3" -->
+                                <Image Width="16">
+                                    <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsHigh}" Value="False">
+                                                        <Setter Property="Source" Value="pack://application:,,/arrow-270.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsHigh}" Value="True">
+                                                        <Setter Property="Source" Value="pack://application:,,/arrow-090.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                            </Border>
+                                <!--TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Changed}" Background="{Binding Changed, Converter={StaticResource ChangedToColorConverter}}">
+                                </-->
+                            </Grid>
                         <DataTemplate.Triggers>
                             <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                                 <Setter Property="Background" Value="LightGray" TargetName="FooBar"/>

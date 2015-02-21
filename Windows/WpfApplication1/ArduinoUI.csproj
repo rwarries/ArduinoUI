@@ -55,6 +55,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BinaryByteBufferToHexStringConverter.cs" />
     <Compile Include="Converters\BinaryByteBufferToAsciiStringConverter.cs" />
+    <Compile Include="Converters\ChangedToColorConverter.cs" />
     <Compile Include="Converters\BooleanToIOConverter.cs" />
     <Compile Include="Converters\PingTextMultiValueConverter.cs" />
     <Compile Include="Converters\PingTextConverter.cs" />

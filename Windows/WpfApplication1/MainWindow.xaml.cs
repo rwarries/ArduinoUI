@@ -241,10 +241,14 @@ namespace WpfApplication1
         {
             Byte[] message = {(byte) 's'};
             byte[] result = _u.Trancieve(message);
-            handleResult(result);
-            foreach (InputOutput io in portC)
+            if (result != null)
             {
-                io.IsHigh = GetBit(io.Pin,result);
+                handleResult(result);
+                foreach (InputOutput io in portC)
+                {
+                    io.IsHigh = GetBit(io.Pin, result);
+                    io.Changed++;
+                }
             }
         }
 
@@ -320,10 +324,13 @@ namespace WpfApplication1
             //4:PINB
             //5:PINC
             handleResult(result);
-            foreach (InputOutput io in portC)
+            if (result != null)
             {
-                Debug.Write("Pin " + io.Pin + " has mode " + GetBit(io.Pin, result));
-                io.Mode = GetBit(io.Pin, result);
+                foreach (InputOutput io in portC)
+                {
+                    Debug.Write("Pin " + io.Pin + " has mode " + GetBit(io.Pin, result));
+                    io.Mode = GetBit(io.Pin, result);
+                }
             }
         }
 
