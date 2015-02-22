@@ -49,11 +49,11 @@ void setup() {
 void loop() {
   // if there's data available, read a packet
   int size = Udp.parsePacket();
-  Serial.print(".");
   if(size>0)
   {
     IPAddress remote = Udp.remoteIP();
  
+ /*
     for (int octetNr = 0; octetNr <= 2; octetNr++)
     {
       Serial.print(remote[octetNr], DEC);
@@ -62,12 +62,13 @@ void loop() {
     Serial.print(remote[3], DEC); //Last octet outside loop (I don't want the extra '.')
     Serial.print(":");
     Serial.println(Udp.remotePort());
+*/
 
     // Read the payload itself...
     Udp.read(packetBuffer,UDP_TX_PACKET_MAX_SIZE);
     handleDatagram(); //FIXME not ver elegant to be fiddling with globals
   }
-  delay(1000);  //All other work that needs to be done goes instead of this delay...
+  //delay(10);  //All other work that needs to be done goes instead of this delay...
   if(demoCounter++ > 10){
     digitalWrite(7, !digitalRead(7));
     Serial.print(demoCounter);

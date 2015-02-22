@@ -59,6 +59,7 @@
     <Compile Include="Converters\BooleanToIOConverter.cs" />
     <Compile Include="Converters\PingTextMultiValueConverter.cs" />
     <Compile Include="Converters\PingTextConverter.cs" />
+    <Compile Include="GraphModel.cs" />
     <Compile Include="RingBuffer.cs" />
     <Compile Include="Converters\ErrorsToMessageConverter.cs" />
     <Compile Include="IPValidationRule.cs" />

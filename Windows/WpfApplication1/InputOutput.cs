@@ -68,10 +68,6 @@ namespace WpfApplication1
         {
             get { return _changed; }
             set { _changed = value;
-                    if (_changed > 0)
-                    {
-                        int a = 10;
-                    }
                     OnPropertyChanged("Changed");
             }
         }

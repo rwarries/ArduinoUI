@@ -23,85 +23,92 @@ namespace WpfApplication1
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window , INotifyPropertyChanged
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-      //private static PropertyMetadata pm = new PropertyMetadata(new PropertyChangedCallback(OnIpChanged));
-      public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register("IPAddress", typeof(string),
-                                                                    typeof(MainWindow), new UIPropertyMetadata("192.168.0.177", OnIpChanged));
-       
-      private static UDPTransciever _u = new UDPTransciever(8888);
-      private static CancellationTokenSource _ctsAlive;
-      private static CancellationTokenSource _ctsPing;
-      private static CancellationTokenSource _cts;
+        //private static PropertyMetadata pm = new PropertyMetadata(new PropertyChangedCallback(OnIpChanged));
+        public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register("IPAddress", typeof(string),
+                                                                      typeof(MainWindow), new UIPropertyMetadata("192.168.0.177", OnIpChanged));
 
-      private static int _interval = 1;
-      private static Boolean _isPingActive;
-      private static Boolean _isAliveActive;
-      private static Boolean _isFetchingActive;
-      private static string _pingResult = "not run";
+        private static UDPTransciever _u = new UDPTransciever(8888);
+        private static CancellationTokenSource _ctsAlive;
+        private static CancellationTokenSource _ctsPing;
+        private static CancellationTokenSource _cts;
 
-      private static RingBuffer<byte> _receiveBuffer = new RingBuffer<byte>(2000);
-      private static RingBuffer<byte> _sentBuffer = new RingBuffer<byte>(2000);
-      private static string _sendString = "";
+        private static int _interval = 1;
+        private static Boolean _isPingActive;
+        private static Boolean _isAliveActive;
+        private static Boolean _isFetchingActive;
+        private static string _pingResult = "not run";
 
-      public RingBuffer<byte> ReceiveBuffer {
-          get { return _receiveBuffer; }
-          set { 
-              _receiveBuffer = value;
-              if (PropertyChanged != null){
-                 NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
-              }
-          }
-      }
+        private static RingBuffer<byte> _receiveBuffer = new RingBuffer<byte>(2000);
+        private static RingBuffer<byte> _sentBuffer = new RingBuffer<byte>(2000);
+        private static string _sendString = "";
 
-      public RingBuffer<byte> SentBuffer
-      {
-          get { return _sentBuffer; }
-          set
-          {
-              _sentBuffer = value;
-              NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
-          }
-      }
+        private static GraphModel _gm; 
 
-      public string SendString {
-          get { return _sendString; }
-          set
-          {
-              _sendString = value;
-              NotifyChange(new PropertyChangedEventArgs("SendString"));
-          }
-      }
+        public RingBuffer<byte> ReceiveBuffer
+        {
+            get { return _receiveBuffer; }
+            set
+            {
+                _receiveBuffer = value;
+                if (PropertyChanged != null)
+                {
+                    NotifyChange(new PropertyChangedEventArgs("ReceiveBuffer"));
+                }
+            }
+        }
 
-      public string PingResult
-      {
-          get { return _pingResult; }
-          set
-          {
-              _pingResult = value;
-              NotifyChange(new PropertyChangedEventArgs("PingResult"));
-          }
-      }
+        public RingBuffer<byte> SentBuffer
+        {
+            get { return _sentBuffer; }
+            set
+            {
+                _sentBuffer = value;
+                NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
+            }
+        }
 
-      private void NotifyChange(PropertyChangedEventArgs e)
-      {
-          if (PropertyChanged != null)
-              PropertyChanged(this, e);
-      }
+        public string SendString
+        {
+            get { return _sendString; }
+            set
+            {
+                _sendString = value;
+                NotifyChange(new PropertyChangedEventArgs("SendString"));
+            }
+        }
 
-      public int Port
-      {
-          get { return _u.RemotePort; }
-          set { _u.RemotePort = value; }
-      }
+        public string PingResult
+        {
+            get { return _pingResult; }
+            set
+            {
+                _pingResult = value;
+                NotifyChange(new PropertyChangedEventArgs("PingResult"));
+            }
+        }
 
-      public int Interval
-      {
-          get { return _interval; }
-          set { 
-              _interval = value;
-          }
-      }
+        private void NotifyChange(PropertyChangedEventArgs e)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, e);
+        }
+
+        public int Port
+        {
+            get { return _u.RemotePort; }
+            set { _u.RemotePort = value; }
+        }
+
+        public int Interval
+        {
+            get { return _interval; }
+            set
+            {
+                _interval = value;
+            }
+        }
 
         public Boolean IsFetchingIsActive
         {
@@ -112,7 +119,7 @@ namespace WpfApplication1
                 if (_isFetchingActive)
                 {
                     _cts = new CancellationTokenSource();
-                    Repeat.Interval(TimeSpan.FromSeconds(_interval), () => changeValues(), _cts.Token);
+                    Repeat.Interval(TimeSpan.FromMilliseconds(_interval), () => changeValues(), _cts.Token);
                 }
                 else
                 {
@@ -133,7 +140,7 @@ namespace WpfApplication1
                 if (_isAliveActive)
                 {
                     _ctsAlive = new CancellationTokenSource();
-                    Repeat.Interval(TimeSpan.FromSeconds(_interval), () => checkAlive(), _ctsAlive.Token);
+                    Repeat.Interval(TimeSpan.FromMilliseconds(_interval), () => checkAlive(), _ctsAlive.Token);
                 }
                 else
                 {
@@ -154,7 +161,7 @@ namespace WpfApplication1
                 if (_isPingActive)
                 {
                     _ctsPing = new CancellationTokenSource();
-                    Repeat.Interval(TimeSpan.FromSeconds(_interval), () => checkPing(), _ctsPing.Token);
+                    Repeat.Interval(TimeSpan.FromMilliseconds(_interval), () => checkPing(), _ctsPing.Token);
                 }
                 else
                 {
@@ -171,13 +178,14 @@ namespace WpfApplication1
         // Callback for dependency property
         private static void OnIpChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-           _u.RemoteIPAddress = (string) e.NewValue;
+            _u.RemoteIPAddress = (string)e.NewValue;
         }
 
         public string IPAddress
         {
             get { return (string)GetValue(IPAddressProperty); }
-            set { 
+            set
+            {
                 SetValue(IPAddressProperty, value);
                 _u.RemoteIPAddress = value;
             }
@@ -215,7 +223,8 @@ namespace WpfApplication1
 
             });
             icInputOutputList.ItemsSource = portC;
-            _u.RemoteIPAddress = (string) GetValue(IPAddressProperty);
+            _u.RemoteIPAddress = (string)GetValue(IPAddressProperty);
+            _gm = new GraphModel(this);
         }
 
         private void portC_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -239,7 +248,7 @@ namespace WpfApplication1
 
         private void changeValues()
         {
-            Byte[] message = {(byte) 's'};
+            Byte[] message = { (byte)'s' };
             byte[] result = _u.Trancieve(message);
             if (result != null)
             {
@@ -295,11 +304,12 @@ namespace WpfApplication1
             {
                 byte[] bytesToSend = Encoding.ASCII.GetBytes(SendString);
                 handleResult(_u.Trancieve(bytesToSend));
-                for (int i=0; i<SendString.Length;i++){
+                for (int i = 0; i < SendString.Length; i++)
+                {
                     _sentBuffer.Add(bytesToSend[i]);
                 }
                 SendString = "";
-                NotifyChange(new PropertyChangedEventArgs("SentBuffer"));             
+                NotifyChange(new PropertyChangedEventArgs("SentBuffer"));
             }
         }
 
@@ -334,5 +344,12 @@ namespace WpfApplication1
             }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        // draws the static parts of the graph
+        {
+            _gm.DrawStaticParts();
+            _gm.DrawData();
+
+        }
     }
 }

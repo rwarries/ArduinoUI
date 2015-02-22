@@ -18,15 +18,10 @@ namespace WpfApplication1
                 return new SolidColorBrush(Color.FromRgb(0, 0, 0));
             }
 
-            int number = (int)value;
-            if (number > 10) return new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-            if (number > 7) return new SolidColorBrush(Color.FromArgb(20, 60,  0, 0));
-            if (number > 5) return new SolidColorBrush(Color.FromArgb(50, 100, 0, 0));
-            if (number > 4) return new SolidColorBrush(Color.FromArgb(100, 140, 0, 0));
-            if (number > 3) return new SolidColorBrush(Color.FromArgb(150, 180, 0, 0));
-            if (number > 2) return new SolidColorBrush(Color.FromArgb(200, 220, 0, 0));
-            if (number > 1) return new SolidColorBrush(Color.FromArgb(255, 250, 0, 0));
-            return new SolidColorBrush(Color.FromArgb(255,255,0,0));
+            int opacity = 255 - ((int) value) * 10;
+            if (opacity < 0) opacity = 0;
+            return new SolidColorBrush(Color.FromArgb((byte) opacity, 250, 0, 0));
+ 
         }
 
 
