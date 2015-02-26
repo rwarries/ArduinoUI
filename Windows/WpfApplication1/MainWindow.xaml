@@ -50,7 +50,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock  FontSize="32">IO Values</TextBlock>
                     <Button Height="40" Width="40" HorizontalAlignment="Right" Margin="3,3,3,3" Name="ButtonGetConfig" VerticalAlignment="Top" Click="ButtonGetConfig_Click">              
-                        <Image Source="application-import.png" />
+                        <Image Source="Content\application-import.png" />
                     </Button>
                 </StackPanel>
 
@@ -59,7 +59,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock  FontSize="32">Messages</TextBlock>
                     <Button Height="40" Width="40" HorizontalAlignment="Right" Margin="3,3,3,3" Name="ButtonDelete" VerticalAlignment="Top" Click="ButtonDelete_Click">
-                        <Image Source="broom.png" />
+                        <Image Source="Content\broom.png" />
                     </Button>
                 </StackPanel>
             </Border>
