@@ -256,6 +256,9 @@ namespace WpfApplication1
                 foreach (InputOutput io in portC)
                 {
                     io.IsHigh = GetBit(io.Pin, result);
+                    RingBuffer<Boolean> r = io.History;
+                    r.Add(io.IsHigh);
+                    io.History = r;
                     io.Changed++;
                 }
             }

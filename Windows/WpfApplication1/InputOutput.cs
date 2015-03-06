@@ -14,6 +14,7 @@ namespace WpfApplication1
         private Boolean? _mode;
         private Boolean _isHigh;
         private int _changed; //Indicates how long ago this was changed in # polls ago
+        private RingBuffer<Boolean> _history;
 
         private static Random _rnd = new Random();
 
@@ -27,6 +28,7 @@ namespace WpfApplication1
             _mode = null;
             _isHigh = false;
             _changed = 0;
+            _history = new RingBuffer<Boolean>(1000); // FIXME Maybe a deent value an be calculated?
         }
 
         public string Name
@@ -69,6 +71,15 @@ namespace WpfApplication1
             get { return _changed; }
             set { _changed = value;
                     OnPropertyChanged("Changed");
+            }
+        }
+
+        public RingBuffer<Boolean> History
+        {
+            get { return _history; }
+            set {
+                _history = value;
+                OnPropertyChanged("History");
             }
         }
 

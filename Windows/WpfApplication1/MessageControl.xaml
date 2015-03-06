@@ -1,0 +1,39 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:WpfApplication1"
+	mc:Ignorable="d"
+	x:Class="WpfApplication1.MessageControl"
+	x:Name="UserControl"
+	d:DesignWidth="190" d:DesignHeight="496">
+
+	<UserControl.Resources>
+		<local:BinaryByteBufferToAsciiStringConverter x:Key="BinaryByteBufferToAsciiStringConverter" />
+		<local:BinaryByteBufferToHexStringConverter x:Key="BinaryByteBufferToHexStringConverter" />
+	</UserControl.Resources>
+
+	<Grid x:Name="LayoutRoot">
+		<StackPanel Orientation="Vertical">
+			<Border Margin="2,2,2,2" CornerRadius="3,3,3,3" Background="GhostWhite" BorderThickness="2" BorderBrush="Silver">
+				<StackPanel Orientation="Vertical">
+					<TextBlock FontSize="11"><Run Text="Received (ASCII)"/></TextBlock>
+					<TextBlock x:Name="receivedMessageAsciiTextBox" Text="{Binding ReceiveBuffer, Converter={StaticResource BinaryByteBufferToAsciiStringConverter}, ElementName=This}" TextWrapping="Wrap" Height="100" FontSize="11"/>
+					<TextBlock FontSize="11"><Run Text="Received (Hex)"/></TextBlock>
+					<TextBlock x:Name="receivedMessageHexadecimalTextBox" Text="{Binding ReceiveBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}, ElementName=This}" TextWrapping="Wrap" Height="200" FontSize="11"/>
+				</StackPanel>
+			</Border>
+			<Border Margin="2,2,2,2" CornerRadius="3,3,3,3" Background="GhostWhite" BorderThickness="2" BorderBrush="Silver">
+				<StackPanel Orientation="Vertical">
+					<TextBlock FontSize="11" Margin="2,2,2,2"><Run Text="Send message"/></TextBlock>
+					<RadioButton Margin="2,2,2,2" IsChecked="True" GroupName="dataMode" Content="ASCII"/>
+					<RadioButton Content="Hexadecimal" GroupName="dataMode" Margin="2,2,2,2"/>
+					<TextBlock x:Name="sentMessageHistoryTextBox" Text="{Binding SentBuffer, Converter={StaticResource BinaryByteBufferToHexStringConverter}, ElementName=This}" TextWrapping="Wrap" Height="200" FontSize="11"/>
+					<TextBox x:Name="sendMessageTextBox" Text="{Binding SendString, ElementName=This, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="11" Background="LightYellow"/>
+					<Button x:Name="SendButton" Width="150" Content="Send" Click="SendButton_Click"/>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</Grid>
+</UserControl>
